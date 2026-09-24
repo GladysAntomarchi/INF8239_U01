@@ -1,230 +1,191 @@
 # INF8239_U01
 
-Laboratorio de preparación y validación del entorno profesional para la asignatura INF-8239.
+Proyecto reproducible de la **Unidad 01 de INF-8239 Ciencia de Datos II**.
 
-## Entorno utilizado
+El repositorio integra preparación del entorno, experimentación con SVM, selección y auditoría de un dataset público, comparación de modelos, reducción dimensional y análisis de eficiencia computacional bajo un enfoque Green AI.
 
-- Sistema operativo: Windows 11
-- Python: 3.14.2
-- Git: 2.55.0.windows.5
-- Editor: Visual Studio Code
-- Entorno virtual: `.venv`
+---
+
+## Ejercicios evaluados
+
+- **Ejercicio 01:** Dataset público y SVM reproducible.
+- **Ejercicio 02:** Ensambles, reducción dimensional y Green AI.
+
+---
 
 ## Estructura del proyecto
 
-- `data/`: datos del proyecto.
-- `docs/`: documentación y ficha del dataset.
-- `notebooks/`: notebooks de Jupyter.
-- `reports/`: reportes y resultados.
-- `src/`: código fuente.
-- `tests/`: pruebas unitarias.
+```text
+INF8239_U01/
+├── data/              # Datos descargados localmente
+├── docs/              # Documentación y ficha del dataset
+├── notebooks/         # Desarrollo experimental
+├── reports/           # Métricas, CSV, figuras y modelos
+│   └── models/
+├── src/               # Código reutilizable
+├── tests/             # Pruebas automatizadas
+├── requirements.txt
+└── README.md
+
+- **`data/`:** Datos descargados localmente.
+- **`docs/`:** Documentación y ficha del dataset.
+- **`notebooks/`:** Desarrollo experimental.
+- **`reports/`:** Métricas, CSV, figuras y modelos.
+- **`src/`:** Código reutilizable.
+- **`tests/`:** Pruebas automatizadas.
+
+---
+
+## Entorno utilizado
+
+- **Sistema operativo:** Windows 11
+- **Python:** 3.14.2
+- **scikit-learn:** 1.9.1
+- **Git:** 2.55.0.windows.5
+- **Editor:** Visual Studio Code
+- **Entorno virtual:** `.venv`
+
+---
 
 ## Creación y activación del entorno virtual
+
+Desde PowerShell:
 
 ```powershell
 python -m venv .venv
 Set-ExecutionPolicy -Scope Process Bypass
 .venv\Scripts\Activate.ps1
-```
 
-## Instalación de dependencias
-
-```powershell
+## Instalación d edependencias
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-```
 
-## Ejecución de pruebas
+## Orden recomendado de ejecución
 
-```powershell
-$env:PYTHONPATH="src"
-python -m pytest -q
-```
+Para reproducir el proyecto completo, ejecuta los notebooks en el siguiente orden secuencial:
 
-### Resultado actual
-
-`8 passed, 1 warning`
-
-La advertencia corresponde a la depreciación futura del parámetro `probability=True` utilizado en el SVC del LAB01.
-
----
+1. `notebooks/00_verificacion.ipynb`
+2. `notebooks/01_svm_guiada.ipynb`
+3. `notebooks/02_dataset_audit.ipynb`
+4. `notebooks/03_online_shoppers_audit.ipynb`
+5. `notebooks/04_green_ai_experiments.ipynb`
 
 ## LAB01 — SVM con pipeline y validación cruzada
 
-Se construyó una línea base mediante `DummyClassifier` y una SVM con kernel RBF dentro de un `Pipeline` con `StandardScaler`, evitando ajustar el escalado antes de separar entrenamiento y prueba.
+Se desarrolló una línea base mediante `DummyClassifier` y una SVM con kernel RBF dentro de un `Pipeline` con `StandardScaler`, utilizando el dataset **Breast Cancer Wisconsin Diagnostic** con una partición estratificada 80/20.
 
 ### Resultados principales
 
-- Dataset: Breast Cancer Wisconsin Diagnostic.
-- Observaciones: 569.
-- Predictores: 30.
-- Partición: 80 % entrenamiento y 20 % prueba, estratificada.
-- F1-macro baseline: 0.3871.
-- F1-macro SVM base en prueba: 0.9812.
-- ROC-AUC SVM base: 0.9950.
-- Mejor configuración de GridSearchCV:
-  - C = 10
-  - gamma = 0.01
-- F1-macro promedio de validación cruzada: 0.9739.
-- F1-macro del modelo seleccionado en prueba: 0.9812.
+| Modelo / etapa | F1-macro |
+| :--- | :---: |
+| DummyClassifier | 0.3871 |
+| SVM base | 0.9812 |
+| Mejor GridSearchCV | 0.9812 (en prueba) |
 
-La configuración ajustada produjo las mismas 114 predicciones que la SVM base sobre el conjunto de prueba, por lo que la mejora observada durante la validación cruzada no se tradujo en una mejora de las métricas finales para esta partición.
+**Mejor configuración obtenida mediante GridSearchCV:**
+- `C = 10`
+- `gamma = 0.01`
 
-Los resultados de la búsqueda se guardan en `reports/svm_cv_results.csv`. El modelo serializado se genera localmente en `reports/svm_best.joblib`.
+**Resultados de validación guardados en:**
+`reports/svm_cv_results.csv`
 
----
+## Ejercicio 01 — Dataset público y SVM reproducible
 
-## LAB02 — Dataset público: Online Shoppers Purchasing Intention
+### Dataset: Online Shoppers Purchasing Intention
 
-### Problema
-
-Se plantea un problema de clasificación binaria orientado a predecir si una sesión de navegación en un sitio de comercio electrónico finalizará en una compra.
-
-- **Dataset:** Online Shoppers Purchasing Intention
 - **Fuente:** UCI Machine Learning Repository
 - **Target:** `Revenue`
 - **Unidad de análisis:** sesión de navegación
-- **Métrica principal:** F1-macro
-- **Split:** 80 % entrenamiento / 20 % prueba
-- **Estratificación:** sí
-- **Random state:** 42
-
-### Fuente y licencia
-
-El dataset se obtiene desde el UCI Machine Learning Repository y está disponible bajo licencia CC BY 4.0.
-
-Ficha del dataset:
-
-https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset
-
-La descarga reproducible se implementó en:
-
-`src/inf8239_u01/data.py`
-
-El archivo descargado se almacena localmente en:
-
-`data/raw/online_shoppers_intention.csv`
-
-Los datos originales no se versionan en Git.
+- **Licencia:** CC BY 4.0
+- **Registros originales:** 12,330
+- **Variables:** 18
+- **Ficha oficial:** [UCI Machine Learning Repository - Online Shoppers Purchasing Intention](https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset)
 
 ### Descarga reproducible
 
-Desde la raíz del proyecto:
+La descarga se implementó en:
+`src/inf8239_u01/data.py`
+
+Desde la raíz del proyecto (PowerShell):
 
 ```powershell
 $env:PYTHONPATH="src"
 python -c "from inf8239_u01.data import download_online_shoppers; print(download_online_shoppers())"
-```
 
-### Auditoría del dataset
+El dataset se almacena localmente en:
+data/raw/online_shoppers_intention.csv
+Los datos originales no se versionan en Git.
 
-El dataset original contiene 12,330 registros y 18 columnas.
+## Auditoría y preparación del dataset
 
-Durante el tamizaje se identificaron:
+### Hallazgos iniciales
+- **Duplicados exactos:** 125 registros (eliminados; restan 12,205 observaciones).
+- **Valores ausentes:** 0.
+- **Variables predictoras:** 17 en total.
+  - **Variables numéricas:** 10.
+  - **Variables categóricas:** 7.
 
-- 125 registros duplicados exactos.
-- 0 valores ausentes.
-- 17 variables predictoras.
-- 1 variable objetivo: `Revenue`.
-
-Los duplicados exactos fueron eliminados mediante código antes de realizar la partición, quedando 12,205 observaciones.
-
-La distribución del target después de la limpieza fue:
-
+### Distribución del target (`Revenue`)
 - `Revenue=False`: 84.37 %
 - `Revenue=True`: 15.63 %
 
-Debido al desbalance, se utiliza F1-macro como métrica principal.
+### Preprocesamiento (`ColumnTransformer`)
+- **Variables numéricas:** imputación por mediana y estandarización con `StandardScaler`.
+- **Variables categóricas:** imputación por moda y codificación con `OneHotEncoder` (`handle_unknown="ignore"` para categorías no observadas en entrenamiento).
+- Las transformaciones se ajustan exclusivamente sobre los datos de entrenamiento para prevenir fuga de información (*data leakage*).
+- La variable objetivo `Revenue` se excluye completamente del conjunto de predictores $X$.
+- `PageValues` se documentó como variable de atención debido a su posible riesgo temporal/informativo, sin clasificarse automáticamente como fuga confirmada.
 
-### Preprocesamiento
-
-Se identificaron 10 variables numéricas y 7 categóricas.
-
-El preprocesamiento se implementó mediante `ColumnTransformer`:
-
-- Variables numéricas: imputación por mediana y `StandardScaler`.
-- Variables categóricas: imputación por moda y `OneHotEncoder`.
-- `handle_unknown="ignore"` para categorías no observadas durante el entrenamiento.
-
-Las transformaciones se ajustan únicamente con los datos de entrenamiento para prevenir fuga de información.
-
-### Resultados iniciales
+## Resultados del modelo
 
 | Modelo | Accuracy | F1-macro | Precision Revenue=True | Recall Revenue=True |
-|---|---:|---:|---:|---:|
+| :--- | :---: | :---: | :---: | :---: |
 | DummyClassifier | 0.8435 | 0.4576 | 0.0000 | 0.0000 |
 | SVM RBF Base | 0.8955 | 0.7740 | 0.7361 | 0.5183 |
 
-El `DummyClassifier` obtiene una accuracy elevada debido al desbalance, pero no identifica ninguna sesión que finalice en compra.
+El baseline evidencia que una accuracy elevada puede resultar engañosa en presencia de desbalance de clases, ya que no detectó ninguna observación con `Revenue=True`.
 
-La SVM base mejora sustancialmente el F1-macro y logra identificar parte de las sesiones con `Revenue=True`, aunque el recall de 0.5183 muestra que todavía existe margen de mejora.
+### Artefactos generados
 
-Los resultados fueron guardados en:
+- **Resultados tabulares:** `reports/lab02_model_results.csv`
+- **Figuras:**
+  - `reports/revenue_distribution.png`
+  - `reports/svm_confusion_matrix.png`
 
-`reports/lab02_model_results.csv`
+  ## Ejercicio 02 — Ensambles, reducción y Green AI
 
-### Riesgo de fuga
+Se mantuvieron el mismo dataset, target, variables predictoras y partición del Ejercicio 01.
 
-No se identificó una variable equivalente directamente al target dentro de los predictores.
+### Protocolo experimental
 
-`PageValues` se mantiene inicialmente como predictor, pero se documentó como variable de atención debido a su relación con el comportamiento previo a una transacción. En experimentos posteriores podrá evaluarse el desempeño del modelo con y sin esta característica.
-
-### Pruebas
-
-El contrato de datos se encuentra en:
-
-`tests/test_data_contract.py`
-
-Para ejecutar todas las pruebas:
-
-```powershell
-$env:PYTHONPATH="src"
-python -m pytest -q
-```
-
-Resultado actual:
-
-`8 passed, 1 warning`
-
-La advertencia corresponde a la depreciación futura del parámetro `probability=True` utilizado en el SVC del LAB01.
-
----
-
-## LAB03 — Ensambles, reducción dimensional y Green AI
-
-LAB03 amplía el problema desarrollado en LAB02 utilizando el mismo dataset, target, variables predictoras y partición de entrenamiento y prueba.
-
-### Protocolo congelado
-
-- **Dataset:** Online Shoppers Purchasing Intention
-- **Target:** `Revenue`
+- **Registros totales:** 12,205
+- **Conjunto de entrenamiento:** 9,764
+- **Conjunto de prueba:** 2,441
+- **Partición:** Split 80/20 estratificado
+- **Semilla aleatoria:** `random_state = 42`
 - **Métrica principal:** F1-macro
 - **Clase prioritaria:** `Revenue=True`
-- **Registros después de eliminar duplicados:** 12,205
-- **Entrenamiento:** 9,764 observaciones
-- **Prueba:** 2,441 observaciones
-- **Split:** 80 % / 20 %, estratificado
-- **Random state:** 42
 
-La partición definida en LAB02 se mantuvo sin modificaciones para todas las comparaciones.
+Cada configuración fue entrenada tres veces. Para comparar el costo computacional se registraron:
+- Mediana del tiempo de entrenamiento.
+- Tiempo de inferencia.
+- Tamaño del modelo serializado.
 
 ### Modelos comparados
 
 Se evaluaron seis configuraciones:
 
-- Regresión logística.
-- SVM con `C=1`.
-- SVM con `C=10`.
-- Random Forest con 100 árboles.
-- Random Forest con 300 árboles.
-- HistGradientBoostingClassifier.
+1. Logistic Regression
+2. SVM ($C=1$)
+3. SVM ($C=10$)
+4. Random Forest (100 árboles)
+5. Random Forest (300 árboles)
+6. HistGradientBoosting
 
-Cada configuración fue entrenada tres veces y se utilizó la mediana del tiempo de ajuste.
-
-### Resultados Green AI
+## Resultados principales
 
 | Modelo | F1-macro | Recall Revenue=True | Mediana ajuste (s) | Inferencia (ms) | Tamaño (KB) | Pareto |
-|---|---:|---:|---:|---:|---:|---|
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | boost | 0.8006 | 0.6126 | 0.2443 | 13.3632 | 333.5488 | Sí |
 | logistic | 0.7347 | 0.4136 | 0.0837 | 6.8037 | 6.7441 | Sí |
 | svm_c1 | 0.7740 | 0.5183 | 6.3510 | 418.6143 | 1681.6152 | No |
@@ -232,84 +193,128 @@ Cada configuración fue entrenada tres veces y se utilizó la mediana del tiempo
 | rf_100 | 0.7121 | 0.3377 | 0.1529 | 31.8306 | 2065.0732 | No |
 | rf_300 | 0.7116 | 0.3377 | 0.3880 | 53.8300 | 6169.6045 | No |
 
-Los resultados completos se almacenan en:
-
+**Resultados completos:**
 `reports/green_ai_results.csv`
 
-### PCA
+## Reducción dimensional y visualización
 
-PCA se aplicó únicamente al bloque de 10 variables numéricas.
+### PCA (Análisis de Componentes Principales)
+PCA se aplicó únicamente al bloque de las 10 variables numéricas. Se seleccionaron 8 componentes, conservando aproximadamente el 97.84 % de la varianza acumulada.
 
-Se seleccionaron 8 componentes para conservar aproximadamente 97.84 % de la varianza.
+| Configuración | F1-macro |
+| :--- | :---: |
+| SVM sin PCA | 0.7740 |
+| SVM con PCA | 0.7734 |
 
-- SVM sin PCA: F1-macro = 0.7740
-- SVM con PCA: F1-macro = 0.7734
+La reducción dimensional produjo una diferencia absoluta de apenas 0.0006 en F1-macro, por lo que el desempeño predictivo prácticamente no se modificó.
 
-La reducción dimensional produjo una diferencia absoluta de apenas 0.0006 en F1-macro.
+**Figura:** `reports/pca_cumulative_variance.png`
 
-### t-SNE
+### t-SNE (t-Distributed Stochastic Neighbor Embedding)
+Se realizaron dos análisis exploratorios:
 
-Se generaron dos visualizaciones con semillas diferentes:
+- **Estabilidad de semillas:** comparación con `perplexity=30` utilizando las semillas 42 y 7.
+- **Sensibilidad a hiperparámetros:** evaluación con valores de `perplexity` en 5, 15, 30 y 50.
 
-`reports/tsne_two_seeds.png`
+**Figuras:**
+- `reports/tsne_two_seeds.png`
+- `reports/tsne_perplexity_comparison.png`
 
-También se evaluó la sensibilidad a `perplexity` utilizando los valores 5, 15, 30 y 50:
+*Las representaciones se utilizan únicamente con fines exploratorios. Las formas, distancias y agrupaciones observadas mediante t-SNE no se interpretan como validación del clasificador.*
 
-`reports/tsne_perplexity_comparison.png`
+## Green AI y frontera de Pareto
 
-Las visualizaciones muestran algunos patrones relativamente estables, aunque las clases continúan parcialmente mezcladas. Las formas y distancias de t-SNE no se interpretan como evidencia de grupos reales ni como validación del clasificador.
+La frontera de Pareto quedó conformada por los modelos:
+- **`boost`** (HistGradientBoosting)
+- **`logistic`** (Logistic Regression)
 
-### Frontera de Pareto
+### Comparación entre Logistic Regression y HistGradientBoosting
 
-La frontera de Pareto quedó formada por:
+- **Ahorro en tiempo de entrenamiento:** 65.75 %
+- **Reducción de tamaño en disco:** 97.98 %
+- **Ahorro en tiempo de inferencia:** 49.09 %
+- **Diferencia absoluta en F1-macro:** 0.0659
 
-- `boost`
-- `logistic`
+Dado que el F1-macro fue definido como métrica principal y `Revenue=True` como la clase prioritaria, **HistGradientBoosting** se seleccionó como la alternativa principal del experimento. **Logistic Regression** permanece como la mejor alternativa para escenarios con alta restricción de cómputo.
 
-La comparación entre estas dos alternativas mostró:
+**Figura:** `reports/pareto.png`  
+*Los tiempos obtenidos son mediciones contextuales del entorno de ejecución y no corresponden a métricas directas de consumo energético o emisiones de carbono.*
 
-- Diferencia absoluta de F1-macro: **0.0659**
-- Ahorro temporal de `logistic` frente a `boost`: **65.75 %**
-- Diferencia de tamaño: **326.8 KB**
-- Reducción relativa de tamaño con `logistic`: **97.98 %**
-- Ahorro de inferencia con `logistic`: **49.09 %**
+---
 
-Considerando que F1-macro fue definida previamente como la métrica principal y `Revenue=True` como la clase prioritaria, `boost` se seleccionó como la alternativa principal del experimento.
+## Modelos serializados
 
-La figura correspondiente se encuentra en:
+Los seis modelos evaluados en el Ejercicio 02 fueron serializados mediante `joblib` y versionados en el directorio `reports/models/`:
 
-`reports/pareto.png`
+- `boost.joblib`
+- `logistic.joblib`
+- `rf_100.joblib`
+- `rf_300.joblib`
+- `svm_c1.joblib`
+- `svm_c10.joblib`
 
-### Modelos serializados
+## Pruebas automatizadas
 
-Los modelos entrenados se generan localmente en:
+Para ejecutar la suite de pruebas desde la raíz del proyecto (PowerShell):
 
-`reports/models/`
+```powershell
+$env:PYTHONPATH="src"
+python -m pytest -q
 
-Los modelos evaluados en el Ejercicio 02 se serializan con joblib y se encuentran disponibles en reports/models/. Se incluyen las seis configuraciones utilizadas en la comparación: Logistic Regression, SVM C=1, SVM C=10, Random Forest 100, Random Forest 300 e HistGradientBoosting.
-
-### Entorno de medición
-
-- Python: 3.14.2
-- Sistema operativo: Windows 11
-- Procesador: Intel64 Family 6 Model 154 Stepping 3, GenuineIntel
-- scikit-learn: 1.9.1
-
-Los tiempos representan mediciones contextuales realizadas en este entorno y no deben interpretarse como consumo energético o emisiones de carbono exactas.
-
-### Pruebas
-
-La función de Pareto se implementó en:
-
-`src/inf8239_u01/green.py`
-
-y sus pruebas en:
-
-`tests/test_green.py`
-
-Resultado actual del proyecto:
+### Resultado actual de las pruebas
 
 `10 passed, 1 warning`
 
-La advertencia corresponde al uso de `SVC(probability=True)` en versiones actuales de scikit-learn.
+> **Nota sobre la advertencia:** La advertencia corresponde al uso de `SVC(probability=True)` en la versión actual de scikit-learn y no representa una falla en las pruebas.
 
+### Cobertura de pruebas
+
+Entre las pruebas automatizadas se incluyen:
+
+- **Validación del entorno de trabajo:** Verificación de dependencias y versiones de Python.
+- **Cumplimiento del contrato del dataset:** Validaciones de estructura, tipos de datos y ausencia de valores nulos o fuga de datos.
+- **Construcción y pipeline de los modelos:** Comprobación de la correcta inicialización y transformación de datos dentro del flujo de trabajo.
+- **Comportamiento y cálculo de la frontera de Pareto:** Pruebas unitarias para la función de selección de modelos óptimos bajo el enfoque Green AI.
+
+## Artefactos principales
+
+### Archivos CSV (Resultados y métricas)
+- `reports/svm_cv_results.csv`
+- `reports/lab02_model_results.csv`
+- `reports/green_ai_results.csv`
+
+### Visualizaciones y figuras
+- `reports/revenue_distribution.png`
+- `reports/svm_confusion_matrix.png`
+- `reports/pca_cumulative_variance.png`
+- `reports/tsne_two_seeds.png`
+- `reports/tsne_perplexity_comparison.png`
+- `reports/pareto.png`
+
+### Modelos serializados
+- `reports/models/`
+
+## Reproducibilidad
+
+El proyecto garantiza la reproducibilidad mediante los siguientes elementos:
+
+- **Entorno aislado:** Uso de un entorno virtual independiente (`.venv`).
+- **Gestión de dependencias:** Definición explícita de librerías y versiones en `requirements.txt`.
+- **Determinismo:** Fijación de semillas aleatorias reproducibles (`random_state = 42`).
+- **Estrategia de muestreo:** Partición estratificada para preservar la proporción de clases.
+- **Pipelines de preprocesamiento:** Uso de `Pipeline` y `ColumnTransformer` para prevenir la fuga de información (*data leakage*).
+- **Modularidad:** Código fuente reutilizable estructurado dentro de `src/`.
+- **Aseguramiento de calidad:** Suite de pruebas automatizadas con `pytest`.
+- **Trazabilidad de artefactos:** Almacenamiento directo de métricas, reportes y figuras dentro de `reports/`.
+- **Control de versiones:** Historial gestionado con Git.
+
+> **Tag del repositorio:** `u01-ejercicio02`
+
+
+### Esta versión me parece mejor equilibrada
+
+No eliminé nada que considero importante para los ejercicios: **instalación, ejecución, LAB01, dataset y licencia, auditoría, prevención de fuga, baseline/SVM, seis modelos, tres repeticiones, PCA, t-SNE, Green AI, Pareto, CSV, figuras, modelos serializados, pruebas y reproducibilidad**. Todos esos elementos aparecen en tu README original y están directamente relacionados con lo solicitado en las actividades. :chatgpt-content-reference{index="2"} :chatgpt-content-reference{index="3"}
+
+Lo que eliminé principalmente fue **repetición y explicación extensa**, porque eso ya está desarrollado en los notebooks y en los dos PDFs.
+
+Esta sería la versión que yo usaría como **README final**.

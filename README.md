@@ -286,7 +286,7 @@ Los modelos entrenados se generan localmente en:
 
 `reports/models/`
 
-Los archivos `.joblib` no se versionan en Git debido a la configuración de `.gitignore`, pero pueden reproducirse ejecutando el notebook de LAB03.
+Los modelos evaluados en el Ejercicio 02 se serializan con joblib y se encuentran disponibles en reports/models/. Se incluyen las seis configuraciones utilizadas en la comparación: Logistic Regression, SVM C=1, SVM C=10, Random Forest 100, Random Forest 300 e HistGradientBoosting.
 
 ### Entorno de medición
 

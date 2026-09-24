@@ -1,0 +1,3 @@
+model,accuracy,f1_macro,precision_revenue_true,recall_revenue_true
+DummyClassifier,0.8435,0.4576,0.0,0.0
+SVM_RBF_Base,0.8955,0.774,0.7361,0.5183
